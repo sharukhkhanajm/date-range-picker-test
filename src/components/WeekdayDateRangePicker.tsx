@@ -66,9 +66,18 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate]);
 
+  /**
+   * Checks if the given year is out of bounds.
+   * @param year - The year to check.
+   * @returns `true` if the year is out of bounds, `false` otherwise.
+   */
   const isYearOutOfBounds = (year: number) =>
     year < years[0] || year > years[years.length - 1];
 
+  /**
+   * Handles the change of month in the date range picker.
+   * @param type - The type of change, either "prev" or "next".
+   */
   const handleChangeMonth = (type: "prev" | "next") => {
     if (type === "prev") {
       if (displayedMonth === 0) {
@@ -133,6 +142,12 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     setHoveredDate(hoverDate);
   };
 
+  /**
+   * Handles the apply action for the date range picker.
+   * If both startDate and endDate are selected, it calculates the date range and weekends,
+   * and calls the onApply callback with the range and weekends as arguments.
+   * Finally, it closes the date range picker.
+   */
   const handleApply = () => {
     if (startDate && endDate) {
       const { range, weekends } = getDateRangeAndWeekends({
@@ -144,6 +159,11 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     }
   };
 
+  /**
+   * Clears the selected start date, end date, and hovered date.
+   * Calls the `onClearFn` callback if provided.
+   * Closes the date range picker.
+   */
   const handleClear = () => {
     setStartDate(null);
     setEndDate(null);
@@ -156,30 +176,46 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     setIsOpen(true);
   };
 
+  /**
+   * Renders the calendar view for the specified month and year.
+   * Days are rendered within weeks, grouped by rows.
+   * Each day cell includes interactive behavior for selection and hover effects.
+   */
   const renderCalendar = useMemo(() => {
+    // Determine the number of days in the displayed month
     const daysCount = daysInMonth(displayedMonth, displayedYear);
+    // Initialize the start date of the month
     const monthStart = new Date(displayedYear, displayedMonth, 1);
+    // Determine the day of the week for the first day of the month
     const startDayOfWeek = monthStart.getDay();
+    // Array to store JSX elements representing weeks of days
     const weeks: JSX.Element[] = [];
-
+    // Array to store the current week's day elements
     let currentWeek: JSX.Element[] = [];
+    // Render empty day placeholders for days before the start of the month
     for (let i = 0; i < startDayOfWeek; i++) {
       currentWeek.push(
         <div key={`empty-${i}`} className="calendar-day empty"></div>
       );
     }
 
+    // Iterate through each day of the month
     for (let day = 1; day <= daysCount; day++) {
+      // Create a Date object representing the current day in the displayed month
       const currentDate = new Date(displayedYear, displayedMonth, day);
+      // Ensure consistent time for comparison (ignore time component)
       startDate?.setHours(0, 0, 0, 0);
       endDate?.setHours(0, 0, 0, 0);
+      // Determine if the current day is a weekend (Saturday or Sunday)
       const isWeekend =
         currentDate.getDay() === 0 || currentDate.getDay() === 6;
+      // Determine if the current day is selected within the date range
       const isSelected =
         startDate &&
         endDate &&
         currentDate >= startDate &&
         currentDate <= endDate;
+      // Determine if the current day is hovered (during date range selection)
       const isHovered =
         startDate && endDate
           ? false
@@ -187,14 +223,19 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
             startDate &&
             currentDate >= startDate &&
             currentDate <= hoveredDate;
+
+      // Determine if the current day is today's date
       const isToday = currentDate.toDateString() === new Date().toDateString();
 
-      const dayClassName = `calendar-day 
-        ${isWeekend ? `weekend` : ""} 
-        ${isSelected ? "selected" : ""} 
-        ${isHovered ? "hovered" : ""}
-        ${isToday ? `today ${showTodaySelection ? "show" : ""}` : ""}
+      // Define CSS classes based on date properties for styling
+      const dayClassName = `calendar-day ${isWeekend ? `weekend` : ""} ${
+        isSelected ? "selected" : ""
+      } ${isHovered ? "hovered" : ""} ${
+        isToday ? `today ${showTodaySelection ? "show" : ""}` : ""
+      }
           `;
+
+      // Create a day element with click and hover event handlers
       currentWeek.push(
         <div
           key={day}
@@ -207,16 +248,19 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
         </div>
       );
 
+      // Check if the current week is complete (7 days) and push to weeks array
       if (currentWeek.length === 7) {
         weeks.push(
           <div key={weeks.length} className="calendar-week">
             {currentWeek}
           </div>
         );
+        // Reset current week array for the next week
         currentWeek = [];
       }
     }
 
+    // Push any remaining days in the current week to the weeks array
     if (currentWeek.length > 0) {
       weeks.push(
         <div key={weeks.length} className="calendar-week">
@@ -225,6 +269,7 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
       );
     }
 
+    // Return the calendar view composed of weeks of days
     return <div className="calendar">{weeks}</div>;
   }, [
     displayedMonth,
@@ -302,7 +347,11 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
           {renderCalendar}
           <footer className="footer">
             <div className="actions">
-              <button className="primary" onClick={handleApply}>
+              <button
+                className="primary"
+                onClick={handleApply}
+                disabled={!startDate || !endDate}
+              >
                 Apply
               </button>
               <button className="outline" onClick={handleClear}>

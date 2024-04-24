@@ -89,6 +89,11 @@ button.primary {
   color: #fff;
 }
 
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 button.primary:hover {
   background-color: #0056b3;
 }

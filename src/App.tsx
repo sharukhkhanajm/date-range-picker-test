@@ -59,6 +59,12 @@ function App() {
   const [range, setRange] = useState<[Date, Date]>();
   const [weekends, setWeekends] = useState<Date[]>();
 
+  /**
+   * Handles the apply event of the date range picker.
+   *
+   * @param selectedRange - The selected date range.
+   * @param weekends - The weekends within the selected range.
+   */
   const handleDateRangeOnApply = (
     selectedRange: [Date, Date],
     weekends: Date[]
@@ -67,6 +73,12 @@ function App() {
     setWeekends(weekends);
   };
 
+  /**
+   * Handles the change event of the date range picker.
+   *
+   * @param selectedRange - The selected date range.
+   * @param weekends - The weekends within the selected date range.
+   */
   const handleDateRangeOnChange = (
     selectedRange: [Date, Date],
     weekends: Date[]
