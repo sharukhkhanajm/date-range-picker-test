@@ -4,7 +4,7 @@ import { IPreset } from "./types";
 import WeekdayDateRangePicker from "./components/WeekdayDateRangePicker";
 
 function App() {
-  const presetOptions: IPreset[] = [
+  const presets: IPreset[] = [
     {
       label: "Today",
       getDateRange: () => {
@@ -80,7 +80,7 @@ function App() {
       <h2>Weekday Date Range Picker Example</h2>
       <WeekdayDateRangePicker
         onApply={handleDateRangeOnApply}
-        presets={presetOptions}
+        presets={presets}
         onChange={handleDateRangeOnChange}
         onClear={() => {
           setRange(undefined);

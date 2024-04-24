@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IWeekdayDateRangePicker } from "../types";
 import { getDateRangeAndWeekends } from "../utils";
 
@@ -107,28 +107,31 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     setDisplayedYear(newYear);
   };
 
-  const handleDateSelect = (selectedDate: Date) => {
-    const dayOfWeek = selectedDate.getDay();
+  const handleDateSelect = useCallback(
+    (selectedDate: Date) => {
+      const dayOfWeek = selectedDate.getDay();
 
-    if (dayOfWeek === 0 || dayOfWeek === 6) {
-      return; // Prevent selection of weekends if allowWeekends is false
-    }
-
-    if (!startDate) {
-      // Set the start date if it's not already set
-      setStartDate(selectedDate);
-    } else if (!endDate && selectedDate > startDate) {
-      // Set the end date only if end date is not set and selected date is after start date
-      setEndDate(selectedDate);
-      if (closeOnRangeSelection) {
-        setIsOpen(false); // Close the popover on range completion
+      if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return; // Prevent selection of weekends if allowWeekends is false
       }
-    } else {
-      // Reset the start date and end date if a new start date is selected
-      setStartDate(selectedDate);
-      setEndDate(null);
-    }
-  };
+
+      if (!startDate) {
+        // Set the start date if it's not already set
+        setStartDate(selectedDate);
+      } else if (!endDate && selectedDate > startDate) {
+        // Set the end date only if end date is not set and selected date is after start date
+        setEndDate(selectedDate);
+        if (closeOnRangeSelection) {
+          setIsOpen(false); // Close the popover on range completion
+        }
+      } else {
+        // Reset the start date and end date if a new start date is selected
+        setStartDate(selectedDate);
+        setEndDate(null);
+      }
+    },
+    [closeOnRangeSelection, endDate, startDate]
+  );
 
   const handleDateHover = (hoverDate: Date | null) => {
     setHoveredDate(hoverDate);
@@ -157,7 +160,7 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     setIsOpen(true);
   };
 
-  const renderCalendar = () => {
+  const renderCalendar = useMemo(() => {
     const daysCount = daysInMonth(displayedMonth, displayedYear);
     const monthStart = new Date(displayedYear, displayedMonth, 1);
     const startDayOfWeek = monthStart.getDay();
@@ -172,6 +175,8 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
 
     for (let day = 1; day <= daysCount; day++) {
       const currentDate = new Date(displayedYear, displayedMonth, day);
+      startDate?.setHours(0, 0, 0, 0);
+      endDate?.setHours(0, 0, 0, 0);
       const isWeekend =
         currentDate.getDay() === 0 || currentDate.getDay() === 6;
       const isSelected =
@@ -225,7 +230,15 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     }
 
     return <div className="calendar">{weeks}</div>;
-  };
+  }, [
+    displayedMonth,
+    displayedYear,
+    endDate,
+    handleDateSelect,
+    hoveredDate,
+    showTodaySelection,
+    startDate,
+  ]);
 
   let dateMessage = "Select Date Range";
 
@@ -290,7 +303,7 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
               ))}
             </select>
           </div>
-          {renderCalendar()}
+          {renderCalendar}
           <footer className="footer">
             <div className="actions">
               <button className="primary" onClick={handleApply}>
@@ -307,6 +320,8 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
                   key={index}
                   onClick={() => {
                     const [start, end] = option.getDateRange();
+                    console.log({ start, end });
+
                     setStartDate(start);
                     setEndDate(end);
                     handleApply();
