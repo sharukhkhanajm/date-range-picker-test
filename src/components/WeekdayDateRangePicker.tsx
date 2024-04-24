@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { IWeekdayDateRangePicker } from "../types";
-import { getDateRangeAndWeekends } from "../utils";
+import { daysInMonth, getDateRangeAndWeekends } from "../utils";
 
 const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
   years = new Array(10)
@@ -65,10 +65,6 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate, endDate]);
-
-  const daysInMonth = (month: number, year: number): number => {
-    return new Date(year, month + 1, 0).getDate();
-  };
 
   const isYearOutOfBounds = (year: number) =>
     year < years[0] || year > years[years.length - 1];
