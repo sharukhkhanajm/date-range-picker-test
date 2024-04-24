@@ -86,6 +86,7 @@ function App() {
           setRange(undefined);
           setWeekends(undefined);
         }}
+        selectedRange={range}
       />
 
       {range ? (

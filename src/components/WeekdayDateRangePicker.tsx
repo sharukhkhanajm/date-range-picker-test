@@ -9,6 +9,7 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
   showTodaySelection = true,
   closeOnRangeSelection = true,
   presets = [],
+  selectedRange,
 
   onApply,
   onChange,
@@ -25,6 +26,15 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
   );
   const popoverRef = useRef<HTMLDivElement>(null);
   const [isOpen, setIsOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (!isOpen && selectedRange) {
+      const startMonth = selectedRange[0].getMonth();
+      const startYear = selectedRange[1].getFullYear();
+      setDisplayedMonth(startMonth);
+      setDisplayedYear(startYear);
+    }
+  }, [isOpen, selectedRange]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

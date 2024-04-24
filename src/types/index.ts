@@ -8,10 +8,7 @@ export interface IWeekdayDateRangePicker {
     showTodaySelection?: boolean;
     closeOnRangeSelection?: boolean;
     presets?: IPreset[];
-    // startDate: Date | null;
-    // endDate: Date | null;
-    // selectedYear?: number;
-    // selectedMonth?: number;
+    selectedRange?: [Date, Date];
 
     onApply: (selectedRange: [Date, Date], weekends: Date[]) => void;
     onChange?: (selectedRange: [Date, Date], weekends: Date[]) => void;
