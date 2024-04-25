@@ -3,7 +3,7 @@ export interface IPreset {
     getDateRange: () => [Date, Date];
 }
   
-export interface IWeekdayDateRangePicker {
+export interface IDateRangePicker {
     years?: number[];
     showTodaySelection?: boolean;
     closeOnRangeSelection?: boolean;

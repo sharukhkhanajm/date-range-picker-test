@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "./App.css";
 import { IPreset } from "./types";
-import WeekdayDateRangePicker from "./components/WeekdayDateRangePicker";
+import DateRangePicker from "./components/DateRangePicker";
 
 function App() {
   const presets: IPreset[] = [
@@ -90,7 +90,7 @@ function App() {
   return (
     <>
       <h2>Weekday Date Range Picker Example</h2>
-      <WeekdayDateRangePicker
+      <DateRangePicker
         onApply={handleDateRangeOnApply}
         presets={presets}
         onChange={handleDateRangeOnChange}

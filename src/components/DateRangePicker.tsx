@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { IWeekdayDateRangePicker } from "../types";
+import { IDateRangePicker } from "../types";
 import { daysInMonth, getDateRangeAndWeekends } from "../utils";
 
-const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
+const DateRangePicker: React.FC<IDateRangePicker> = ({
   years = new Array(10)
     .fill(0)
     .map((_, index) => new Date().getFullYear() + index),
@@ -387,4 +387,4 @@ const WeekdayDateRangePicker: React.FC<IWeekdayDateRangePicker> = ({
   );
 };
 
-export default WeekdayDateRangePicker;
+export default DateRangePicker;
